@@ -1,1 +1,1 @@
-# Computa-o-Gr-fica---Modelando-Qu-dricas
+# Computacao Grafica Modelando Quadricas
