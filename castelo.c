@@ -1,12 +1,11 @@
-// gcc bonecoNeve.c -o bonecoNeve.exe -I"./include" -L"./bin/x64" -L"./lib-mingw-w64" -lfreeglut -lglu32 -lopengl32
-
+// gcc castelo.c -o castelo.exe -I"./include" -L"./bin/x64" -L"./lib-mingw-w64" -lfreeglut -lglu32 -lopengl32
 #include <GL/glut.h>
-#include <stdio.h>
 
-// Variáveis de rotação da cena (controladas pelas teclas de seta)
+// Variáveis de rotação da cena
 static GLfloat yRot = 0.0f;   // rotação horizontal (esquerda/direita)
 static GLfloat xRot = 0.0f; 
 
+float angulo = 0;
 
 // ------------------------------------------------------------
 // Função chamada quando a janela é redimensionada
@@ -85,7 +84,7 @@ void SetupRC()
 
 
 // ------------------------------------------------------------
-// Função que trata teclas especiais (setas do teclado)
+// Função que trata teclas especiais
 // Controla a rotação da cena
 // ------------------------------------------------------------
 void SpecialKeys(int key, int x, int y)
@@ -109,18 +108,13 @@ void SpecialKeys(int key, int x, int y)
     if (xRot > 360.0f) xRot -= 360.0f;
     if (xRot < 0.0f)   xRot += 360.0f;
 
-
-    //xRot = (GLfloat)((const int)xRot % 360);
-    //zRot = (GLfloat)((const int)zRot % 360);
-
     // Solicita redesenho da cena
     glutPostRedisplay();
 }
 
-// No topo do programa, junto com as outras variáveis
 GLfloat zDist = -50.0f; 
 
-// Crie esta nova função
+
 void Keyboard(unsigned char key, int x, int y) {
     if (key == 'w' || key == 'W') {
         zDist += 2.0f;
@@ -132,203 +126,176 @@ void Keyboard(unsigned char key, int x, int y) {
 }
 
 
-// ------------------------------------------------------------
-// Função principal de renderização
-// Desenha todos os objetos da cena
-// ------------------------------------------------------------
-void RenderScene(void) {
-    // Limpa a tela e o buffer de profundidade
+void torre(float x, float z){
+
+    glPushMatrix();
+
+        glTranslatef(x,0,z);
+
+        // corpo da torre
+        glColor3f(0.75,0.75,0.75);
+        glPushMatrix();
+            glTranslatef(0,0.0,0);
+            glRotatef(-90,1,0,0);
+            glutSolidCylinder(0.5,2.0,20,20);
+        glPopMatrix();
+
+        // telhado
+        glColor3f(0.5,0.1,0.1);
+        glPushMatrix();
+            glTranslatef(0,2.0,0);
+            glRotatef(-90,1,0,0);
+            glutSolidCone(0.6,1.0,20,20);
+        glPopMatrix();
+
+    glPopMatrix();
+}
+
+void arvore(float x, float z){
+
+    glPushMatrix();
+
+        glTranslatef(x,0,z);
+
+        // tronco
+        glColor3f(0.5,0.3,0.1);
+        glPushMatrix();
+            glRotatef(-90,1,0,0);
+            glutSolidCylinder(0.1,0.8,10,10);
+        glPopMatrix();
+
+        // folhas
+        glColor3f(0.0,0.5,0.0);
+        glPushMatrix();
+            glTranslatef(0,0.8,0);
+            glRotatef(-90,1,0,0);
+            glutSolidCone(0.5,1.0,20,20);
+        glPopMatrix();
+
+    glPopMatrix();
+}
+
+void bandeira(float x, float z){
+
+    glPushMatrix();
+
+        glTranslatef(x,2.8,z);
+
+        // Mastro
+        glColor3f(0.3,0.3,0.3);
+        glPushMatrix();
+            glRotatef(-90,1,0,0);
+            glutSolidCylinder(0.05,1.2,10,10);
+        glPopMatrix();
+
+        // Bandeira
+        glColor3f(0.5,0.1,0.1);
+        glPushMatrix();
+            glTranslatef(0.4,1.0,0);
+            glScalef(0.8,0.4,0.05);
+            glutSolidCube(1);
+        glPopMatrix();
+
+    glPopMatrix();
+}
+
+void castelo(){
+
+    glColor3f(0.8,0.8,0.8);
+
+    glPushMatrix();
+        glTranslatef(0,0.8,0);
+        glScalef(3.0,1.6,2.0);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    glColor3f(0,0,0);
+
+    glPushMatrix();
+        glTranslatef(0,0.25,1.05);
+        glScalef(0.5,0.5,0.05);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    
+    glColor3f(0,0,0);
+
+    for(float i=-0.6;i<=0.6;i+=0.6){
+        glPushMatrix();
+            glTranslatef(i,0.8,1.05);
+            glScalef(0.2,0.2,0.05);
+            glutSolidCube(1);
+        glPopMatrix();
+    }
+
+    for(float i=-0.6;i<=0.6;i+=0.6){
+        glPushMatrix();
+            glTranslatef(i,0.8,-1.05);
+            glScalef(0.2,0.2,0.05);
+            glutSolidCube(1);
+        glPopMatrix();
+    }
+
+    for(float i=-1.5;i<=1.5;i+=1.5){
+        glPushMatrix();
+            glTranslatef(i,0.8,0);
+            glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+            glScalef(0.5,0.2,0.05);
+            glutSolidCube(1);
+        glPopMatrix();
+    }
+
+    torre(-1.5,-1);
+    torre(1.5,-1);
+    torre(-1.5,1);
+    torre(1.5,1);
+
+    bandeira(-1.5,-1);
+    bandeira(1.5,-1);
+    bandeira(-1.5,1);
+    bandeira(1.5,1);
+}
+
+void renderScene(){
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    glTranslatef(0.0f, 0.0f, zDist);
-    gluLookAt(10.0, 10.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0); 
-  
-    glRotatef(yRot, 0.0f, 1.0f, 0.0f); 
-    glRotatef(xRot, 1.0f, 0.0f, 0.0f); 
+    glTranslatef(0,-0.5,zDist);
 
-    // Criar o objeto quádrico
-    GLUquadricObj *pObj = gluNewQuadric();
-    gluQuadricDrawStyle(pObj, GLU_FILL); // Pode usar GLU_LINE para ver o wireframe
+    glRotatef(xRot,1,0,0);
+    glRotatef(yRot,0,1,0);
 
-    // --- DESENHANDO UMA TORRE (Cilindro + Cone) ---
-    
-    // Base da Torre 1 (Cilindro)
+    glRotatef(angulo,0,1,0);
+
+    glColor3f(0.4,0.8,0.4);
+
     glPushMatrix();
-        glColor3f(0.7f, 0.7f, 0.7f); // Cinza claro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para ficar em pé no eixo Y
-        // gluCylinder(objeto, raio_base, raio_topo, altura, fatias, pilhas)
-        gluCylinder(pObj, 1.0, 1.0, 4.0, 32, 32); 
+        glTranslatef(0,0,0);
+        glScalef(1000,0.1,1000);
+        glutSolidCube(1);
     glPopMatrix();
 
-    // Telhado da Torre 1 (Cone)
-    glPushMatrix();
-        glColor3f(0.5f, 0.2f, 0.0f); // Marrom/Laranja
-        glTranslatef(0.0f, 4.0f, 0.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        // Um cone é um cilindro com raio de topo igual a zero
-        gluCylinder(pObj, 1.3, 0.0, 1.5, 32, 32); 
-    glPopMatrix();
-    
-    //Torre 2
-    glPushMatrix();
-        glColor3f(0.7f, 0.7f, 0.7f); // Cinza claro
-        glTranslatef(6.0f, 0.0f, 0.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para ficar em pé no eixo Y
-        // gluCylinder(objeto, raio_base, raio_topo, altura, fatias, pilhas)
-        gluCylinder(pObj, 1.0, 1.0, 4.0, 32, 32); 
-    glPopMatrix();
+    castelo();
 
-    //Telhado 2
-    glPushMatrix();
-        glColor3f(0.5f, 0.2f, 0.0f); // Marrom/Laranja
-        glTranslatef(6.0f, 4.0f, 0.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        // Um cone é um cilindro com raio de topo igual a zero
-        gluCylinder(pObj, 1.3, 0.0, 1.5, 32, 32); 
-    glPopMatrix();
+    arvore(-5,3);
+    arvore(5,-2);
+    arvore(-4,-3);
+    arvore(4,3);
 
-     //Torre 3
-    glPushMatrix();
-        glColor3f(0.7f, 0.7f, 0.7f); // Cinza claro
-        glTranslatef(0.0f, 0.0f, -6.0f);
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para ficar em pé no eixo Y
-        // gluCylinder(objeto, raio_base, raio_topo, altura, fatias, pilhas)
-        gluCylinder(pObj, 1.0, 1.0, 4.0, 32, 32); 
-    glPopMatrix();
-
-    // Telhado 3
-    glPushMatrix();
-        glColor3f(0.5f, 0.2f, 0.0f); // Marrom/Laranja
-        glTranslatef(0.0f, 4.0f, -6.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        // Um cone é um cilindro com raio de topo igual a zero
-        gluCylinder(pObj, 1.3, 0.0, 1.5, 32, 32); 
-    glPopMatrix();
-
-    //Torre 4
-    glPushMatrix();
-        glColor3f(0.7f, 0.7f, 0.7f); // Cinza claro
-        glTranslatef(6.0f, 0.0f, -6.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para ficar em pé no eixo Y
-        // gluCylinder(objeto, raio_base, raio_topo, altura, fatias, pilhas)
-        gluCylinder(pObj, 1.0, 1.0, 4.0, 32, 32); 
-    glPopMatrix();
-
-    //Telhado 4
-    glPushMatrix();
-        glColor3f(0.5f, 0.2f, 0.0f); // Marrom/Laranja
-        glTranslatef(6.0f, 4.0f, -6.0f); // Move para o topo do cilindro
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        // Um cone é um cilindro com raio de topo igual a zero
-        gluCylinder(pObj, 1.3, 0.0, 1.5, 32, 32); 
-    glPopMatrix();
-    
-
-
-    // --- DESENHANDO AS MURALHAS (Cubos esticados) ---
-    // Como muros não são quádricas nativas da GLU, usamos as formas da GLUT
-
-    //Muro 1
-      glPushMatrix();
-        glColor3f(0.6f, 0.6f, 0.6f);
-        glTranslatef(3.0f, 1.5f, 0.0f); // Posiciona entre as torres
-        glScalef(4.0f, 2.0f, 0.5f);     // Estica para parecer um muro
-        glutSolidCube(1.5f);
-    glPopMatrix();
-
-
-    //Muro 3
-      glPushMatrix();
-        glColor3f(0.6f, 0.6f, 0.6f);
-        glTranslatef(3.0f, 1.5f, -6.0f); // Posiciona entre as torres
-        glScalef(4.0f, 2.0f, 0.5f);     // Estica para parecer um muro
-        glutSolidCube(1.5f);
-    glPopMatrix();
-    
-
-    //Muro 2
-    glPushMatrix();
-        glColor3f(0.6f, 0.6f, 0.6f);
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(3.0f, 1.5f, 0.0f); // Posiciona entre as torres
-        glScalef(4.0f, 2.0f, 0.5f);     // Estica para parecer um muro
-        glutSolidCube(1.5f);
-    glPopMatrix();
-
-    //Muro 4
-    glPushMatrix();
-        glColor3f(0.6f, 0.6f, 0.6f);
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(3.0f, 1.5f, 6.0f); // Posiciona entre as torres
-        glScalef(4.0f, 2.0f, 0.5f);     // Estica para parecer um muro
-        glutSolidCube(1.5f);
-    glPopMatrix();
-
-// Janela 1
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-    glTranslatef(2.0f, 1.5f, 0.4f); // 0.51f para ficar "na pele" da parede
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-// Janela 2
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-    glTranslatef(4.0f, 1.5f, 0.4f); // 0.51f para ficar "na pele" da parede
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-// Janela 
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-    glTranslatef(6.4f, 1.5f, -2.0f); // 0.51f para ficar "na pele" da parede
-    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-// Janela 
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-glTranslatef(6.4f, 1.5f, -4.0f); // 0.51f para ficar "na pele" da parede
-glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-// Janela 3
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-    glTranslatef(2.0f, 1.5f, -6.4f); 
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-// Janela 4
-glColor3f(0.0f, 0.0f, 0.0f); // Preto
-glPushMatrix();
-    glTranslatef(4.0f, 1.5f, -6.4f); 
-    glScalef(1.0f, 1.0f, 0.1f);      // Bem fino
-    glutSolidCube(1.0f);
-glPopMatrix();
-
-//------PORTA---------
-
-    // Limpeza
-    gluDeleteQuadric(pObj);
     glutSwapBuffers();
 }
 
+void init(){
 
-// ------------------------------------------------------------
-// Função principal
-// Inicializa o GLUT e registra callbacks
-// ------------------------------------------------------------
-int main(int argc,char *argv[])
-{
+    glClearColor(0.5,0.7,1.0,1);
+
+    glEnable(GL_DEPTH_TEST);
+}
+
+
+int main(int argc, char** argv){
+
     glutInit(&argc,argv);
    
 
@@ -337,18 +304,18 @@ int main(int argc,char *argv[])
 
     glutInitWindowSize(800,600);
 
-    glutCreateWindow("Castelinho- OpenGL");
+    glutCreateWindow("Castelo - OpenGL");
 
     // registra funções de callback
     glutReshapeFunc(ChangeSize);
     glutSpecialFunc(SpecialKeys);
     glutKeyboardFunc(Keyboard);
-    glutDisplayFunc(RenderScene);
+
+    glutDisplayFunc(renderScene);
 
     // configura iluminação e estado inicial
     SetupRC();
 
-    // inicia loop principal do GLUT
     glutMainLoop();
 
     return 0;
