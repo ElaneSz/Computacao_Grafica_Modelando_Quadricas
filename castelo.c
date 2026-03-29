@@ -1,3 +1,4 @@
+// gcc castelo.c -o castelo.exe -I"./include" -L"./bin/x64" -L"./lib-mingw-w64" -lfreeglut -lglu32 -lopengl32
 #include <GL/glut.h>
 
 // Variáveis de rotação da cena
