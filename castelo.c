@@ -1,4 +1,3 @@
-// gcc castelo.c -o castelo.exe -I"./include" -L"./bin/x64" -L"./lib-mingw-w64" -lfreeglut -lglu32 -lopengl32
 #include <GL/glut.h>
 
 // Variáveis de rotação da cena
@@ -202,10 +201,29 @@ void bandeira(float x, float z){
 void castelo(){
 
     glColor3f(0.8,0.8,0.8);
+    // Muros da frente
+    glPushMatrix();
+        glTranslatef(0,0.8,0.95);
+        glScalef(3.0,1.6,0.2);
+        glutSolidCube(1);
+    glPopMatrix();
 
     glPushMatrix();
-        glTranslatef(0,0.8,0);
-        glScalef(3.0,1.6,2.0);
+        glTranslatef(0,0.8,-0.95);
+        glScalef(3.0,1.6,0.2);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    // Muros laterais
+    glPushMatrix();
+        glTranslatef(-1.4,0.8,0.0);
+        glScalef(0.2,1.6,2.5);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(1.4,0.8,0.0);
+        glScalef(0.2,1.6,2.5);
         glutSolidCube(1);
     glPopMatrix();
 
@@ -236,14 +254,19 @@ void castelo(){
         glPopMatrix();
     }
 
-    for(float i=-1.5;i<=1.5;i+=1.5){
-        glPushMatrix();
-            glTranslatef(i,0.8,0);
-            glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-            glScalef(0.5,0.2,0.05);
-            glutSolidCube(1);
-        glPopMatrix();
-    }
+    glPushMatrix();
+        glTranslatef(-1.5,0.8,0);
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(0.5,0.2,0.05);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(1.5,0.8,0);
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(0.5,0.2,0.05);
+        glutSolidCube(1);
+    glPopMatrix();
 
     torre(-1.5,-1);
     torre(1.5,-1);
