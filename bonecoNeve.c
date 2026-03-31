@@ -108,7 +108,17 @@ void SpecialKeys(int key, int x, int y)
     // Solicita redesenho da cena
     glutPostRedisplay();
 }
+GLfloat zDist = 0.0f; 
 
+void Keyboard(unsigned char key, int x, int y) {
+    if (key == 'w' || key == 'W') {
+        zDist += 1.0f;
+    }
+    if (key == 's' || key == 'S') {
+        zDist -= 1.0f;
+    }
+    glutPostRedisplay();
+}
 
 // ------------------------------------------------------------
 // Função principal de renderização
@@ -124,6 +134,8 @@ void RenderScene(void)
 
     // Move a cena para frente da câmera
     glTranslatef(0.0f,-1.0f,-7.0f);
+
+    glTranslatef(0,0,zDist);
 
     // Aplica rotações controladas pelo teclado
     glRotatef(xRot, 1.0f, 0.0f, 0.0f);
@@ -264,93 +276,55 @@ void RenderScene(void)
 
     glEnd();
 
-    // ----------------------
-    // CARTOLA
-    // ----------------------
-
-    glColor3f(0.0f,0.0f,0.0f);
-
-    GLUquadric *quad1 = gluNewQuadric();
+    /// início chapéu
+    GLUquadricObj *pObj = gluNewQuadric(); 
+    glColor3f(0.0f, 0.0f, 0.0f); // Preto
 
     glPushMatrix();
-        glTranslatef(0.0f,1.65f,0.0f);
-        glRotatef(-90,1,0,0);
-        glDisable(GL_CULL_FACE);
+        glTranslatef(0.0f, 1.65f, 0.0f); // Subindo para o topo da cabeça
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para o chapéu ficar "em pé"
 
-        // disco com furo no meio (aba da cartola)
-        gluDisk(quad1, 0.10, 0.40, 30, 1);
-
+        glDisable(GL_CULL_FACE); //para poder ver a aba 
+        //aba
+        gluDisk(pObj, 0.0f, 0.38f, 26, 13);   // O raio externo (0.5) deve ser maior que o do cilindro (0.25)
+        //tubo
+        gluCylinder(pObj, 0.2f, 0.2f, 0.4f, 26, 13); 
+        //topo
+        glPushMatrix();
+            glTranslatef(0.0f, 0.0f, 0.4f); // Sobe até o topo do cilindro
+            gluDisk(pObj, 0.0f, 0.2f, 26, 13);
+        glPopMatrix();
     glPopMatrix();
 
-    // --- REATIVE O CULLING ---
-    glEnable(GL_CULL_FACE);
-
-
-    // topo da cartola (cilindro)
-    GLUquadric *quad;
+        //faixa chapeu
+        glColor3f(1.0f, 0.0f, 0.0f); //vermelho
 
     glPushMatrix();
-        glTranslatef(0.0f,1.65f,0.0f);
-        glRotatef(-90,1,0,0);
-
-        quad = gluNewQuadric();
-        gluCylinder(quad, 0.20, 0.20, 0.40, 20, 20);
-        gluDeleteQuadric(quad);
-
+        glTranslatef(0.0f, 1.65f, 0.0f); // Subindo para o topo da cabeça
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para o chapéu ficar "em pé"
+        //pescoço
+        gluCylinder(pObj, 0.21f, 0.21f, 0.1f, 26, 13);
     glPopMatrix();
+        // --- REATIVE O CULLING ---
+        glEnable(GL_CULL_FACE);
 
-    // faixa da cartola
-    glColor3f(0.7f, 0.2f, 0.8f);
+  
+    gluDeleteQuadric(pObj);
+    // fim do chapéu
+
+    //início cachecol
+    GLUquadricObj *ppObj = gluNewQuadric();
+    glColor3f(1.0f, 0.0f, 0.0f); //vermelho
 
     glPushMatrix();
-        glTranslatef(0.0f,1.67f,0.0f); 
-        glRotatef(-90,1,0,0);
-        gluCylinder(quad, 0.205, 0.205, 0.05, 20, 20);
+        glTranslatef(0.0f, 1.05f, 0.0f); // Subindo para o topo da cabeça
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotaciona para o chapéu ficar "em pé"
+        //pescoço
+        gluCylinder(pObj, 0.25f, 0.25f, 0.25f, 26, 13);
+
     glPopMatrix();
+    gluDeleteQuadric(pObj);
 
-    glColor3f(0.0f,0.0f,0.0f);
-    glPushMatrix();
-        glTranslatef(0.0f,2.05f,0.0f);
-        glRotatef(-90,1,0,0);
-
-        gluDisk(quad, 0.0, 0.20, 20, 1);
-    glPopMatrix();
-
-    // ----------------------
-    // CACHECOL
-    // ----------------------
-
-    glColor3f(0.4f, 0.0f, 0.4f);
-
-    // parte ao redor do pescoço
-    
-    glPushMatrix();
-        glTranslatef(0.0f,1.15f,0.0f);
-        glRotatef(-90,1,0,0);
-        glDisable(GL_CULL_FACE);
-        gluCylinder(quad, 0.25, 0.25, 0.08, 30, 30);
-    glPopMatrix();
-
-    // --- REATIVE O CULLING ---
-    glEnable(GL_CULL_FACE);
-
-    // ponta do cachecol
-
-    // ponta 1
-    glPushMatrix();
-        glTranslatef(0.35f,1.15f,0.05f);
-        glRotatef(-65,0,0,-2);
-        glScalef(0.05f,0.35f,0.02f);
-        glutSolidCube(1);
-    glPopMatrix();
-
-    // ponta 2
-    glPushMatrix();
-        glTranslatef(0.26f,1.20f,0.17f);
-        glRotatef(-90,-90,0,1);
-        glScalef(0.05f,0.30f,0.02f);
-        glutSolidCube(1);
-    glPopMatrix();
 
 
     // Restaura matriz original
@@ -380,6 +354,7 @@ int main(int argc,char *argv[])
     glutReshapeFunc(ChangeSize);
     glutSpecialFunc(SpecialKeys);
     glutDisplayFunc(RenderScene);
+    glutKeyboardFunc(Keyboard);
 
     // configura iluminação e estado inicial
     SetupRC();
