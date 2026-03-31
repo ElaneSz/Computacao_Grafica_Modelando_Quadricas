@@ -131,13 +131,13 @@ void torre(float x, float z){
     glPushMatrix();
 
         glTranslatef(x,0,z);
-
+ GLUquadricObj *pObj = gluNewQuadric(); 
         // corpo da torre
         glColor3f(0.75,0.75,0.75);
         glPushMatrix();
             glTranslatef(0,0.0,0);
             glRotatef(-90,1,0,0);
-            glutSolidCylinder(0.5,2.0,20,20);
+            gluCylinder(pObj, 0.5f, 0.5f,2.0f ,20,20);
         glPopMatrix();
 
         // telhado
@@ -156,12 +156,13 @@ void arvore(float x, float z){
     glPushMatrix();
 
         glTranslatef(x,0,z);
-
+ GLUquadricObj *pObj = gluNewQuadric(); 
         // tronco
         glColor3f(0.5,0.3,0.1);
         glPushMatrix();
             glRotatef(-90,1,0,0);
-            glutSolidCylinder(0.1,0.8,10,10);
+            gluCylinder(pObj, 0.1f, 0.1f,0.8f ,10,10);
+  
         glPopMatrix();
 
         // folhas
@@ -180,12 +181,12 @@ void bandeira(float x, float z){
     glPushMatrix();
 
         glTranslatef(x,2.8,z);
-
+ GLUquadricObj *pObj = gluNewQuadric(); 
         // Mastro
         glColor3f(0.3,0.3,0.3);
         glPushMatrix();
             glRotatef(-90,1,0,0);
-            glutSolidCylinder(0.05,1.2,10,10);
+            gluCylinder(pObj, 0.05f, 0.05f,1.2f ,10,10);
         glPopMatrix();
 
         // Bandeira
