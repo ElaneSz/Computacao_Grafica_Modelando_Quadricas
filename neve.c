@@ -132,8 +132,48 @@ void desenharBoneco() {
         gluDisk(pObj, 0.0f, 0.45f, 26, 1); // Aba
         gluCylinder(pObj, 0.25f, 0.25f, 0.4f, 26, 1); // Topo
         glPopMatrix();
-        
-        gluDeleteQuadric(pObj);
+    gluDeleteQuadric(pObj);
+
+    
+    // ----------------------
+    // BRAÇOS (galhos)
+    // ----------------------
+    glColor3f(0.2f,0.1f,0.0f); // marrom escuro
+
+    glLineWidth(3);
+
+    glBegin(GL_LINES);
+
+    // braço principal
+    glVertex3f(-0.35f,0.95f,0.0f);
+    glVertex3f(-0.8f,1.05f,0.0f);
+
+    // galho 1
+    glVertex3f(-0.7f,1.02f,0.0f);
+    glVertex3f(-0.75f,1.15f,0.0f);
+
+    // galho 2
+    glVertex3f(-0.7f,1.02f,0.0f);
+    glVertex3f(-0.75f,0.9f,0.0f);
+
+    glEnd();
+
+    glBegin(GL_LINES);
+
+    // braço principal
+    glVertex3f(0.35f,0.95f,0.0f);
+    glVertex3f(0.8f,1.05f,0.0f);
+
+    // galho 1
+    glVertex3f(0.7f,1.02f,0.0f);
+    glVertex3f(0.75f,1.15f,0.0f);
+
+    // galho 2
+    glVertex3f(0.7f,1.02f,0.0f);
+    glVertex3f(0.75f,0.9f,0.0f);
+
+    glEnd();
+
     }
     
     void RenderScene(void) {
